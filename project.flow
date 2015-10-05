@@ -1,19 +1,18 @@
 {
 
   project : {
-    name : 'luxe - test - draw',
+    name : 'luxe.spriteanim',
     version : '1.0.0',
     author : 'luxeengine',
 
     app : {
-      name : 'luxe_test_draw',
-      package : 'com.luxeengine.testdraw'
+      name : 'luxe_test_spriteanim',
+      package : 'com.luxeengine.testspriteanim'
     },
 
     build : {
       dependencies : {
         luxe : '*',
-		mint : '*'
       }
     },
 
