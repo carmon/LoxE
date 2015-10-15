@@ -1,182 +1,170 @@
 
-import luxe.Input;
-import luxe.Rectangle;
-import luxe.Sprite;
-import luxe.Text;
-import luxe.Vector;
 import luxe.Color;
+import luxe.Vector;
+import luxe.Input;
+import luxe.Text;
 
-import luxe.components.sprite.SpriteAnimation;
-
-import phoenix.Texture.FilterType;
-
+import mint.Control;
+import mint.types.Types;
+import mint.render.luxe.LuxeMintRender;
+import mint.render.luxe.Convert;
+import mint.layout.margins.Margins;
 
 class Main extends luxe.Game {
 
+    var state : luxe.States;
+    var current : Int = 0;
+    var count : Int = 0;
 
-    var sprite : Sprite;
-    var sprite2 : Sprite;
-	var text : Text;
-    var textbounds : Rectangle;
+    public static var disp : Text;
+    public static var canvas: mint.Canvas;
+    public static var rendering: LuxeMintRender;
+    public static var layout: Margins;
+
+    var canvas_debug : Text;
+    var debug : Bool = false;
+
+    override function ready() {
+
+        Luxe.renderer.clear_color.rgb(0x121219);
+
+        rendering = new LuxeMintRender();
+        layout = new Margins();
+
+        canvas = new mint.Canvas({
+            name:'canvas',
+            rendering: rendering,
+            options: { color:new Color(1,1,1,0.0) },
+            x: 0, y:0, w: 960, h: 640
+        });
+
+        disp = new Text({
+            name:'display.text',
+            pos: new Vector(Luxe.screen.w-10, Luxe.screen.h-10),
+            align: luxe.TextAlign.right,
+            align_vertical: luxe.TextAlign.bottom,
+            point_size: 15,
+            text: 'usage text goes here'
+        });
+
+        canvas_debug = new Text({
+            name:'debug.text',
+            text: 'debug:  (${Luxe.snow.os} / ${Luxe.snow.platform})',
+            point_size: 14,
+            pos: new Vector(950, 10),
+            align: right,
+            depth: 999,
+            color: new Color()
+        });
+
+        state = new luxe.States();
+
+        state.add( new tests.KitchenSink({ name:'state0' }) );
+        state.add( new tests.Scrolling({ name:'state1' }) );
+        state.add( new tests.Depth({ name:'state2' }) );
+
+        count = Lambda.count( state._states );
+
+        state.set( 'state0' );
+
+    } //ready
+
+    function change(to:String) {
+
+        disp.text = '';
+
+        canvas.destroy_children();
+        state.set(to);
+
+    } //change
 
     override function config(config:luxe.AppConfig) {
 
-        config.preload.textures = [
-            { id:'assets/carapace.png' },
-            { id:'assets/idle/swat_idle_1.png' },
-            { id:'assets/idle/swat_idle_2.png' },
-            { id:'assets/idle/swat_idle_3.png' },
-            { id:'assets/idle/swat_idle_4.png' },
-        ];
+        config.preload.textures.push({ id:'assets/960.png' });
+        config.preload.textures.push({ id:'assets/transparency.png' });
+        config.preload.textures.push({ id:'assets/mint.box.png' });
 
         return config;
 
     } //config
 
-    override function ready() {
+    override function onrender() {
 
-    	var block_back = new Sprite({
-    		centered : false,
-    		pos : new Vector(0,0),
-    		size : new Vector(Luxe.screen.w, Luxe.screen.h),
-    		color : new Color().rgb(0xa8a79c)
-    	});
+        canvas.render();
 
-    	var floory = (Luxe.screen.h/2)+92;
-    	var block_floor = new Sprite({
-    		centered : false,
-    		pos : new Vector(0,floory),
-    		size : new Vector(Luxe.screen.w, Luxe.screen.h - floory ),
-    		color : new Color().rgb(0x797d76)
-    	});
-
-        var _text = 'Animation by Gabriele Pala\nclick to visit http://meetcartographer.com/carapace';
-        text = new Text({
-            pos : new Vector(Luxe.screen.w/2, 100),
-            color : new Color().rgb(0x797d76),
-            point_size : 20,
-            align : TextAlign.center,
-            text : _text
-        });
-
-        var _textsize = new Vector();
-        Luxe.renderer.font.dimensions_of(_text, Luxe.renderer.font.info.point_size, _textsize);
-
-            textbounds = new Rectangle((Luxe.screen.w/2) - (_textsize.x/2), 90, _textsize.x, _textsize.y);
-
-    	var texture = Luxe.resources.texture('assets/carapace.png');
-
-		texture.filter_min = texture.filter_mag = FilterType.nearest;
-
-		sprite = new Sprite({
-            name : "walker",
-			texture : texture,
-			pos : new Vector( Luxe.screen.w/2, Luxe.screen.h/2 ),
-			size : new Vector(192,192)
-		});
-
-			//add a sprite animation component
-		var anim = new SpriteAnimation({ name:'anim' });
-        sprite.add( anim );
-
-		var animation_json = '
-			{
-				"walk" : {
-                    "frame_size":{ "x":"48", "y":"48" },
-                    "frameset": ["1-12"],
-                    "events" : [{"frame":8, "event":"foot.1"}, {"frame":1, "event":"foot.2"}, { "frame": 6 }],
-                    "pingpong":"false",
-                    "loop": "true",
-                    "speed": "18"
-                },
-                "walk_glitch" : {
-                    "frame_sources":[{
-                        "frame":8, "x":0, "y":0, "w":96, "h":96
-                    }],
-					"frame_size":{ "x":"48", "y":"48" },
-					"frameset": ["1-8","9","10","hold 10","11 hold 5", "12"],
-					"pingpong":"false",
-					"loop": "true",
-					"speed": "18"
-				}
-			}
-		';
-
-			//We can create the animation from a json string
-		anim.add_from_json( animation_json );
-
-			//Or we can add them manually, using the anim.animation_list.push(new SpriteAnimationData)
-
-		anim.animation = 'walk';
-		anim.play();
-
-            //create the sound to use
-        Luxe.audio.create('assets/samulis_footstep_on_stone_2.ogg', 'step1');
-        Luxe.audio.create('assets/samulis_footstep_on_stone_1.ogg', 'step2');
-
-            //create an event manually
-        anim.add_event('walk', 7, 'frame7');
-        anim.add_event('walk', 8 );
-        anim.add_event('walk', 6, '6.1' );
-        anim.add_event('walk', 6, '6.2' );
-        anim.add_event('walk', 6, '6.3' );
-        anim.add_event('walk', 10, 'test_dupe' );
-        anim.add_event('walk', 10, 'test_dupe' );
-        anim.add_event('walk', 10, 'test_multi' );
-
-        anim.remove_event('walk', 8);
-        anim.remove_events('walk', 6);
-
-        sprite.events.listen('foot.1', function(e){
-            Luxe.audio.play('step1'); //:todo:
-        });
-        sprite.events.listen('foot.2', function(e){
-            Luxe.audio.play('step2'); //:todo:
-        });
-        sprite.events.listen('*', function(e){
-            //uncomment to see all the events remaining after the above messing
-            // trace( e.event + " fired on " + e.animation + ":" + e.image_frame );
-        });
-
-        sprite2 = new Sprite({
-            name : "squad_guy",
-            pos : new Vector( Luxe.screen.w/2, Luxe.screen.h-32 ),
-            size : new Vector(64,64)
-        });
-
-            //add a sprite animation component
-        var anim2 = new SpriteAnimation({ name:'anim' });
-        sprite2.add( anim2 );
-        var animation_json2 = '
-            {
-                "idle" : {
-                    "frame_size":{ "x":"16", "y":"16" },
-                    "frameset": ["1-2","3 hold 5","4","1 hold 7"],
-                    "image_sequence" : "assets/idle/swat_idle",
-                    "loop": "true",
-                    "filter_type" : "nearest",
-                    "speed": "8"
-                }
+        if(debug) {
+            for(c in canvas.children) {
+                drawc(c);
             }
-        ';
-
-            //We can create the animation from a json string
-        anim2.add_from_json( animation_json2 );
-
-        anim2.animation = 'idle';
-        anim2.play();
-
-    } //ready
-
-    override function onmouseup( e:MouseEvent ) {
-
-        if(textbounds.point_inside(e.pos)) {
-            Luxe.io.url_open('http://meetcartographer.com/carapace/');
         }
 
-    } //onmouseup
+    } //onrender
 
-    override function onkeyup( e:KeyEvent ) {
+    override function update(dt:Float) {
+
+        canvas.update(dt);
+
+    } //update
+
+    override function onmousemove(e) {
+
+        canvas.mousemove( Convert.mouse_event(e) );
+
+        var s = 'debug:  (${Luxe.snow.os} / ${Luxe.snow.platform})\n';
+
+        s += 'canvas nodes: ' + (canvas != null ? '${canvas.nodes}' : 'none');
+        s += '\n';
+        s += 'focused: ' + (canvas.focused != null ? '${canvas.focused.name} [${canvas.focused.nodes}]' : 'none');
+        s += (canvas.focused != null ? ' / depth: '+canvas.focused.depth : '');
+        s += '\n';
+        s += 'modal: ' + (canvas.modal != null ?  canvas.modal.name : 'none');
+        s += '\n';
+        s += 'dragged: ' + (canvas.dragged != null ? canvas.dragged.name : 'none');
+        s += '\n\n';
+
+        canvas_debug.text = s;
+
+    } //onmousemove
+
+    override function onmousewheel(e) {
+        canvas.mousewheel( Convert.mouse_event(e) );
+    }
+
+    override function onmouseup(e) {
+        canvas.mouseup( Convert.mouse_event(e) );
+    }
+
+    override function onmousedown(e) {
+        canvas.mousedown( Convert.mouse_event(e) );
+    }
+
+    override function onkeydown(e:luxe.Input.KeyEvent) {
+        canvas.keydown( Convert.key_event(e) );
+    }
+
+    override function ontextinput(e:luxe.Input.TextEvent) {
+        canvas.textinput( Convert.text_event(e) );
+    }
+
+
+    override function onkeyup(e:luxe.Input.KeyEvent) {
+
+        if(e.keycode == Key.key_d && e.mod.ctrl) { debug = !debug; trace('debug: $debug'); }
+        if(e.keycode == Key.key_v && e.mod.ctrl) canvas.visible = !canvas.visible;
+
+        if(e.keycode == Key.key_9) {
+            current--;
+            if(current < 0) current = count-1;
+            change('state$current');
+        }
+
+        if(e.keycode == Key.key_0) {
+            current++;
+            if(current >= count) current = 0;
+            change('state$current');
+        }
+
+        canvas.keyup( Convert.key_event(e) );
 
         if(e.keycode == Key.escape) {
             Luxe.shutdown();
@@ -184,5 +172,25 @@ class Main extends luxe.Game {
 
     } //onkeyup
 
+    function drawc(control:Control) {
+
+        if(!control.visible) return;
+
+        Luxe.draw.rectangle({
+            depth: 1000,
+            x: control.x,
+            y: control.y,
+            w: control.w,
+            h: control.h,
+            color: new Color(1,0,0,0.5),
+            immediate: true
+        });
+
+        for(c in control.children) {
+            drawc(c);
+        }
+
+    } //drawc
 
 } //Main
+
