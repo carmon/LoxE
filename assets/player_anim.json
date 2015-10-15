@@ -1,0 +1,31 @@
+{
+    "idle" : {
+        "frame_size":{ "x":"40", "y":"100" },
+        "frameset": ["1-8"],
+        "loop": "true",
+        "speed": "8"
+    },
+    "walk" : {
+        "frame_size":{ "x":"40", "y":"100" },
+        "frameset": ["9-16"],
+        "loop": "true",
+        "speed": "8"
+    },
+    "jump" : {
+        "frame_size":{ "x":"40", "y":"100" },
+        "frameset": ["16-25"],
+        "loop": "true",
+        "speed": "16",
+		"events": [
+			{"frame":"17" , "event":"jump_start"},
+			{"frame":"21" , "event":"jump_mid"},
+			{"frame":"25" , "event":"jump_end"}
+		]
+    },
+    "action" : {
+        "frame_size":{ "x":"40", "y":"100" },
+        "frameset": ["25-32"],
+        "loop": "true",
+        "speed": "8"
+    }
+}

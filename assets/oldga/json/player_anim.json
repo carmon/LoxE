@@ -1,0 +1,55 @@
+{
+	"idle": {
+		"frame_size":{ "x":"32", "y":"48" },
+        "frameset": ["1-4"],
+        "loop": "true",
+        "speed": "1"
+	},
+	"jump_in": {
+		"frame_size":{ "x":"32", "y":"48" },
+        "frameset": ["1-4 4"],
+        "loop": "false",
+        "speed": "4",
+		"events": [{ "frame":"4" , "event":"jump_in_complete" }]		
+	},
+	"jump_out": {
+		"frame_size":{ "x":"32", "y":"48" },
+        "frameset": ["4-1"],
+        "loop": "false",
+        "speed": "4",
+		"events": [{ "frame":"1" , "event":"jump_out_complete" }]		
+	},
+	"attack_in": {
+		"frame_size":{ "x":"32", "y":"48" },
+        "frameset": ["9-12"],
+        "loop": "false",
+        "speed": "4",
+		"events": [{ "frame":"12" , "event":"attack_in_complete" }]
+	},
+	"attack_out": {
+		"frame_size":{ "x":"32", "y":"48" },
+        "frameset": ["12-9"],
+        "loop": "false",
+        "speed": "4",
+		"events": [{ "frame":"9" , "event":"attack_out_complete" }]
+	},
+	"lean_forward": {
+		"frame_size":{ "x":"32", "y":"48" },
+		"frameset": ["5 hold 7"],
+        "loop": "true",
+        "speed": "1"
+	},
+	"lean_backward": {
+		"frame_size":{ "x":"32", "y":"48" },
+		"frameset": ["6 hold 7"],
+        "loop": "true",
+        "speed": "1"
+	},
+	"dead": {
+		"frame_size":{ "x":"32", "y":"48" },
+        "frameset": ["12-9"],
+        "loop": "false",
+        "speed": "4",		
+		"events": [{ "frame":"9" , "event":"dead_complete" }]
+	}
+}

@@ -1,0 +1,18 @@
+{
+    "textures" : [
+        { "id" : "assets/img/player_sheet.png" },
+        { "id" : "assets/img/tile_idle.jpg" },
+        { "id" : "assets/img/weapon_tile.png" }
+    ],
+    "fonts" : [
+        { "id" : "assets/font/Gagarin.fnt" }
+    ],
+	"sounds" : [
+		{ "id" : "assets/fx/in.wav", "name" : "teleport_in", "is_stream" : false },
+		{ "id" : "assets/fx/out.wav", "name" : "teleport_out", "is_stream" : false }
+	],
+	"json" : [
+		{ "id" : "assets/json/player_anim.json" },
+		{ "id" : "assets/json/player_placeholder_anim.json" }
+	]
+}

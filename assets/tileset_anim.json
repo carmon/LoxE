@@ -1,0 +1,20 @@
+{
+    "common" : {
+        "frame_size":{ "x":"40", "y":"40" },
+        "frameset": ["1"],
+        "loop": "true",
+        "speed": "8"
+    },
+    "uncommon" : {
+        "frame_size":{ "x":"40", "y":"40" },
+        "frameset": ["2"],
+        "loop": "true",
+        "speed": "8"
+    },
+    "stone" : {
+        "frame_size":{ "x":"40", "y":"40" },
+        "frameset": ["3"],
+        "loop": "true",
+        "speed": "8"
+    }
+}

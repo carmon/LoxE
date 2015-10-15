@@ -1,0 +1,19 @@
+{
+    "textures" : [
+        { "id" : "assets/mochila.png" },
+        { "id" : "assets/player.png" },
+        { "id" : "assets/player_shadow.png" },
+        { "id" : "assets/poste.png" },
+        { "id" : "assets/arrow_next.png" },
+        { "id" : "assets/arrow_action.png" },
+		{ "id" : "assets/tileset.png" }
+    ],
+	"sounds" : [
+		{ "id" : "assets/sounds/arrow_next_bip.wav", "name" : "next_bip", "is_stream" : false },
+		{ "id" : "assets/sounds/put_pillar.wav", "name" : "put_pillar", "is_stream" : false }
+	],
+    "json" : [
+        { "id" : "assets/player_anim.json" },
+        { "id" : "assets/tileset_anim.json" }
+    ]
+}
